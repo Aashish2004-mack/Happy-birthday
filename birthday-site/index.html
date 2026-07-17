@@ -122,6 +122,30 @@
   .flower-video-wrap{ width:100%; max-width:340px; border-radius:16px; overflow:hidden; box-shadow:0 10px 26px rgba(107,29,34,.18); }
   .flower-video{ width:100%; display:block; background:#000; }
 
+  /* ---------- GAME PAGE ---------- */
+  .game-area{
+    position:relative; width:100%; height:360px;
+    background:linear-gradient(180deg,#FBF4E4,#F1E4C7);
+    border-radius:16px; overflow:hidden; margin-bottom:20px;
+    border:1px solid rgba(107,29,34,.15);
+    touch-action:none;
+  }
+  .game-hud{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    font-size:12.5px; color:var(--maroon); background:rgba(255,255,255,.8);
+    padding:5px 14px; border-radius:20px; z-index:5; white-space:nowrap;
+  }
+  .falling-heart{
+    position:absolute; top:-34px; font-size:26px; line-height:1;
+    cursor:pointer; user-select:none; -webkit-user-select:none;
+    animation-name:fall; animation-timing-function:linear; animation-fill-mode:forwards;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.12));
+  }
+  @keyframes fall{ to{ transform:translateY(var(--fall-dist)); } }
+  .game-result{ display:none; text-align:center; }
+  .game-result-text{ font-size:14.5px; color:#5b5346; max-width:340px; margin:0 auto 18px; line-height:1.6; }
+  .game-result-actions{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
   /* ---------- SONG PAGE ---------- */
   #song{ justify-content:center; text-align:center; }
   .song-card{
@@ -295,9 +319,28 @@
       <input type="file" accept="audio/*" hidden onchange="loadSong(event)">
     </label>
   </div>
-  <button class="btn primary continue-btn" onclick="showPage('letter')">continue</button>
+  <button class="btn primary continue-btn" onclick="showPage('game')">continue</button>
 </section>
 
+<!-- GAME PAGE -->
+<section class="page" id="game">
+  <p class="flow-title">catch my heart</p>
+  <p class="flow-sub">tap as many hearts as you can in 20 seconds</p>
+
+  <div class="game-area" id="gameArea">
+    <div class="game-hud"><span id="gameScore">0</span> caught · <span id="gameTime">20</span>s left</div>
+  </div>
+
+  <button class="btn primary" id="gameStartBtn" onclick="startGame()">start</button>
+
+  <div class="game-result" id="gameResult">
+    <p class="game-result-text" id="gameResultText"></p>
+    <div class="game-result-actions">
+      <button class="btn" onclick="startGame()">play again</button>
+      <button class="btn primary" onclick="showPage('letter')">continue</button>
+    </div>
+  </div>
+</section>
 
 <!-- LETTER PAGE -->
 <section class="page" id="letter">
@@ -305,7 +348,7 @@
   <div class="moon"></div>
   <div class="letter-card">
     <p class="letter-title">for you</p>
-    <p class="letter-body" id="letterBody">Dear Sreethu Molu,
+    <p class="letter-body" id="letterBody">Dear Sreethu Molu ,
 
 I wanted today to feel different from every other day, so I put this little corner of the internet together just for you.
 
@@ -320,7 +363,7 @@ Happy birthday. I'm so glad you were born.</p>
 
 </div>
 <script>
-  const pages = ['greet','pictures','flowers','song','letter'];
+  const pages = ['greet','pictures','flowers','song','game','letter'];
 
   function showPage(id){
     pages.forEach(p=>{
@@ -395,6 +438,68 @@ Happy birthday. I'm so glad you were born.</p>
     s.style.left = Math.random()*100+'%';
     s.style.animationDelay = (Math.random()*3)+'s';
     starField.appendChild(s);
+  }
+
+  /* ---------- CATCH-THE-HEART GAME ---------- */
+  let gameScore = 0, gameTimeLeft = 20, gameRunning = false;
+  let gameSpawnTimer = null, gameClockTimer = null;
+
+  function startGame(){
+    const area = document.getElementById('gameArea');
+    area.querySelectorAll('.falling-heart').forEach(h=>h.remove());
+
+    gameScore = 0;
+    gameTimeLeft = 20;
+    gameRunning = true;
+    document.getElementById('gameScore').textContent = gameScore;
+    document.getElementById('gameTime').textContent = gameTimeLeft;
+    document.getElementById('gameStartBtn').style.display = 'none';
+    document.getElementById('gameResult').style.display = 'none';
+
+    gameSpawnTimer = setInterval(spawnHeart, 550);
+    gameClockTimer = setInterval(()=>{
+      gameTimeLeft--;
+      document.getElementById('gameTime').textContent = Math.max(gameTimeLeft,0);
+      if(gameTimeLeft <= 0) endGame();
+    }, 1000);
+  }
+
+  function spawnHeart(){
+    const area = document.getElementById('gameArea');
+    if(!area) return;
+    const heart = document.createElement('div');
+    heart.className = 'falling-heart';
+    heart.textContent = Math.random() > 0.35 ? '💗' : '🌸';
+    heart.style.left = (Math.random()*85) + '%';
+    heart.style.setProperty('--fall-dist', (area.clientHeight + 50) + 'px');
+    const duration = 2.4 + Math.random()*1.6;
+    heart.style.animationDuration = duration + 's';
+    heart.addEventListener('animationend', ()=> heart.remove());
+    heart.addEventListener('click', ()=>{
+      if(!gameRunning) return;
+      gameScore++;
+      document.getElementById('gameScore').textContent = gameScore;
+      heart.remove();
+    });
+    area.appendChild(heart);
+  }
+
+  function endGame(){
+    gameRunning = false;
+    clearInterval(gameSpawnTimer);
+    clearInterval(gameClockTimer);
+    document.querySelectorAll('.falling-heart').forEach(h=>h.remove());
+
+    let msg;
+    if(gameScore >= 15){
+      msg = "okay, that's basically a world record. though honestly, you didn't need to catch a single one — you already had my heart.";
+    } else if(gameScore >= 8){
+      msg = "not bad at all! but truthfully you were never trying to win anyone's heart here. you already have mine.";
+    } else {
+      msg = "however many you caught, it doesn't matter — you caught mine a long time ago.";
+    }
+    document.getElementById('gameResultText').textContent = `You caught ${gameScore} hearts. ${msg}`;
+    document.getElementById('gameResult').style.display = 'block';
   }
 </script>
 </body>
