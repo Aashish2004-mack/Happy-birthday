@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4EEE1;
+    --cream-2:#EFE6D3;
+    --maroon:#6B1D22;
+    --maroon-2:#8C2A30;
+    --rose:#D98B93;
+    --sage:#7C8967;
+    --night:#0E1B3D;
+    --night-2:#16265A;
+    --gold:#F2D67B;
+    --ink:#2B2620;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:#D9D2C2;
+    color:var(--ink);
+    overflow-x:hidden;
+    display:flex;
+    justify-content:center;
+  }
+
+  /* phone frame — the whole experience lives inside a phone-width column */
+  .phone{
+    width:100%;
+    max-width:430px;
+    min-height:100vh;
+    background:var(--cream);
+    position:relative;
+    box-shadow:0 0 40px rgba(0,0,0,.18);
+    overflow-x:hidden;
+  }
+
+  /* ---------- PAGES ---------- */
+  .page{
+    display:none;
+    min-height:calc(100vh - 50px);
+    padding:36px 20px 60px;
+    position:relative;
+    animation:fadeIn .6s ease;
+  }
+  .page.active{ display:flex; flex-direction:column; align-items:center; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- GREETING PAGE ---------- */
+  #greet{ justify-content:center; text-align:center; }
+  .mascot{ width:90px; height:90px; margin-bottom:6px; }
+  .heart-pop{ animation:pop 1.6s ease-in-out infinite; }
+  @keyframes pop{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.15); } }
+  .headline{
+    font-family:'Caveat',cursive; font-weight:700;
+    font-size:46px;
+    color:var(--maroon); line-height:1;
+    margin:6px 0 18px;
+  }
+  .headline .name{ color:var(--rose); }
+  .sub{ font-size:15px; color:#6b6355; margin-bottom:30px; }
+  .btn-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+  .btn{
+    font-family:'Poppins',sans-serif; font-size:14px; font-weight:500;
+    padding:14px 26px; border-radius:30px; cursor:pointer;
+    border:1.5px solid var(--maroon); background:transparent; color:var(--maroon);
+    transition:all .25s ease;
+  }
+  .btn.primary{ background:var(--maroon); color:var(--cream); }
+  .btn:active{ transform:scale(0.97); }
+  .continue-btn{ margin-top:28px; }
+  .no-msg{ margin-top:18px; font-size:13px; color:var(--rose); font-style:italic; min-height:18px; }
+
+  .deco-flower{ position:absolute; bottom:0; width:120px; opacity:.85; pointer-events:none; }
+  .deco-flower.left{ left:-10px; }
+  .deco-flower.right{ right:-10px; transform:scaleX(-1); }
+
+  /* ---------- PICTURES PAGE ---------- */
+  #pictures{ align-items:stretch; }
+  .pic-header{ text-align:center; margin-bottom:22px; }
+  .pic-title{ font-family:'Caveat',cursive; font-size:44px; color:var(--maroon); }
+  .pic-note{ font-size:13px; color:#7a7264; }
+  .collage-wrap{ max-width:640px; width:100%; margin:0 auto; position:relative; }
+  .collage{
+    display:grid; width:100%;
+    grid-template-columns:repeat(4,1fr);
+    grid-auto-rows:82px;
+    gap:8px;
+  }
+  .photo-slot{
+    background:var(--cream-2);
+    border:1.5px dashed rgba(107,29,34,.35);
+    border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; position:relative; overflow:hidden;
+    transition:border-color .2s ease;
+  }
+  .photo-slot:hover{ border-color:var(--maroon); }
+  .photo-slot:focus-visible{ outline:2px solid var(--maroon); outline-offset:2px; }
+  .photo-slot img{ width:100%; height:100%; object-fit:contain; background:var(--cream-2); }
+  .s1{ grid-column:1/3; grid-row:1/3; }
+  .s2{ grid-column:3/5; grid-row:1/2; }
+  .s3{ grid-column:1/2; grid-row:3/5; }
+  .s4{ grid-column:2/4; grid-row:3/5; }
+  .s5{ grid-column:4/5; grid-row:2/4; }
+  .s6{ grid-column:1/3; grid-row:5/6; }
+  .s7{ grid-column:3/5; grid-row:5/6; }
+  .ribbon{ position:absolute; top:-30px; left:-10px; width:110px; opacity:.9; pointer-events:none; }
+  .bouquet{ position:absolute; bottom:-24px; left:10px; width:90px; opacity:.9; pointer-events:none; }
+
+  /* ---------- FLOWERS PAGE ---------- */
+  #flowers{ justify-content:center; text-align:center; }
+  .flow-title{ font-family:'Caveat',cursive; font-size:52px; color:var(--maroon); margin-bottom:10px; }
+  .flow-sub{ font-size:14px; color:#6b6355; max-width:420px; margin-bottom:30px; }
+  .flower-video-wrap{ width:100%; max-width:340px; border-radius:16px; overflow:hidden; box-shadow:0 10px 26px rgba(107,29,34,.18); }
+  .flower-video{ width:100%; display:block; background:#000; }
+
+  /* ---------- SONG PAGE ---------- */
+  #song{ justify-content:center; text-align:center; }
+  .song-card{
+    background:var(--cream-2); border-radius:20px; padding:34px 30px;
+    max-width:380px; width:100%;
+    border:1px solid rgba(107,29,34,.15);
+  }
+  .song-title{ font-family:'Caveat',cursive; font-size:40px; color:var(--maroon); margin-bottom:4px; }
+  .song-dedication{ font-size:13px; color:#7a7264; margin-bottom:22px; }
+  .vinyl{
+    width:120px; height:120px; border-radius:50%; cursor:pointer;
+    background:repeating-radial-gradient(circle,var(--maroon) 0 2px,#4a1215 2px 4px);
+    margin:0 auto 20px; position:relative;
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+  }
+  .vinyl::after{
+    content:''; position:absolute; top:50%; left:50%; width:34px; height:34px;
+    background:var(--gold); border-radius:50%; transform:translate(-50%,-50%);
+  }
+  .vinyl.spin{ animation:spin 3s linear infinite; }
+  @keyframes spin{ from{ transform:rotate(0);} to{ transform:rotate(360deg);} }
+  .song-upload{
+    border:1.5px dashed rgba(107,29,34,.35); border-radius:14px;
+    padding:14px; cursor:pointer; font-size:13px; color:var(--maroon);
+    margin-bottom:14px;
+  }
+  audio{ width:100%; margin-top:10px; }
+
+  /* ---------- LETTER PAGE ---------- */
+  #letter{
+    background:linear-gradient(var(--night),var(--night-2));
+    justify-content:center; align-items:center;
+    min-height:calc(100vh - 50px); padding:40px 20px 60px;
+    width:100%;
+    position:relative; overflow:hidden;
+  }
+  .stars{ position:absolute; inset:0; }
+  .star{ position:absolute; background:var(--gold); border-radius:50%; opacity:.85; animation:twinkle 3s ease-in-out infinite; }
+  @keyframes twinkle{ 0%,100%{ opacity:.3; } 50%{ opacity:1; } }
+  .moon{
+    position:absolute; top:40px; right:60px; width:70px; height:70px; border-radius:50%;
+    background:var(--gold); box-shadow:0 0 40px rgba(242,214,123,.6);
+  }
+  .letter-card{
+    position:relative; z-index:2;
+    background:var(--cream); color:var(--ink);
+    max-width:520px; width:100%;
+    border-radius:6px; padding:44px 40px;
+    box-shadow:0 20px 50px rgba(0,0,0,.35);
+    font-family:'Playfair Display',serif;
+  }
+  .letter-title{ font-family:'Caveat',cursive; font-size:38px; color:var(--maroon); margin-bottom:18px; text-align:center; }
+  .letter-body{ font-size:16px; line-height:1.8; white-space:pre-line; }
+  .letter-sign{ margin-top:24px; text-align:right; font-style:italic; color:var(--maroon); }
+
+  @media(max-width:360px){
+    .collage{ grid-auto-rows:72px; }
+    .letter-card{ padding:32px 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- GREETING PAGE -->
+<section class="page active" id="greet">
+  <svg class="mascot heart-pop" viewBox="0 0 100 100">
+    <ellipse cx="50" cy="58" rx="30" ry="26" fill="#fff" stroke="#2B2620" stroke-width="2"/>
+    <path d="M28 40 C24 26,34 20,38 30" fill="#fff" stroke="#2B2620" stroke-width="2"/>
+    <path d="M72 40 C76 26,66 20,62 30" fill="#fff" stroke="#2B2620" stroke-width="2"/>
+    <circle cx="40" cy="55" r="2.4" fill="#2B2620"/>
+    <circle cx="60" cy="55" r="2.4" fill="#2B2620"/>
+    <path d="M44 64 Q50 68 56 64" stroke="#2B2620" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M50 20 C46 12,54 12,50 20" fill="#D98B93"/>
+    <path d="M46 16 L50 8 L54 16 Z" fill="#D98B93"/>
+  </svg>
+  <h1 class="headline">Hello there<span class="name">, love</span>!</h1>
+  <p class="sub">do you want to see your gift?</p>
+  <div class="btn-row">
+    <button class="btn primary" onclick="showPage('pictures')">yes please</button>
+    <button class="btn" id="noBtn" onclick="teaseNo()">no thanks</button>
+  </div>
+  <p class="no-msg" id="noMsg"></p>
+
+  <svg class="deco-flower left" viewBox="0 0 120 160">
+    <path d="M60 160 C60 100,40 90,50 60" stroke="#7C8967" stroke-width="4" fill="none"/>
+    <ellipse cx="52" cy="55" rx="18" ry="26" fill="#6B1D22" transform="rotate(-20 52 55)"/>
+    <ellipse cx="72" cy="40" rx="16" ry="24" fill="#8C2A30" transform="rotate(15 72 40)"/>
+    <ellipse cx="40" cy="30" rx="15" ry="22" fill="#D98B93" transform="rotate(-30 40 30)"/>
+  </svg>
+  <svg class="deco-flower right" viewBox="0 0 120 160">
+    <path d="M60 160 C60 100,40 90,50 60" stroke="#7C8967" stroke-width="4" fill="none"/>
+    <ellipse cx="52" cy="55" rx="18" ry="26" fill="#D98B93" transform="rotate(-20 52 55)"/>
+    <ellipse cx="72" cy="40" rx="16" ry="24" fill="#e8b7bd" transform="rotate(15 72 40)"/>
+  </svg>
+</section>
+
+<!-- PICTURES PAGE -->
+<section class="page" id="pictures">
+  <div class="pic-header">
+    <p class="pic-title">happy birthday</p>
+    <p class="pic-note">tap any photo to swap it for another</p>
+  </div>
+
+  <div class="collage-wrap">
+    <svg class="ribbon" viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M10 10 C40 10,40 40,20 45 C40 40,60 10,90 15" stroke="#D98B93" stroke-width="10" fill="none" stroke-linecap="round"/>
+    </svg>
+
+    <div class="collage">
+      <div class="photo-slot s1" role="button" tabindex="0" aria-label="Change photo 1" onclick="pick(this)" onkeydown="pickOnEnter(event,this)">
+        <img src="assets/photo1.jpg" alt="Photo together 1">
+        <input type="file" accept="image/*" hidden onchange="loadPhoto(event,this)">
+      </div>
+      <div class="photo-slot s2" role="button" tabindex="0" aria-label="Change photo 2" onclick="pick(this)" onkeydown="pickOnEnter(event,this)">
+        <img src="assets/photo2.jpg" alt="Photo together 2">
+        <input type="file" accept="image/*" hidden onchange="loadPhoto(event,this)">
+      </div>
+      <div class="photo-slot s3" role="button" tabindex="0" aria-label="Change photo 3" onclick="pick(this)" onkeydown="pickOnEnter(event,this)">
+        <img src="assets/photo3.jpg" alt="Photo together 3">
+        <input type="file" accept="image/*" hidden onchange="loadPhoto(event,this)">
+      </div>
+      <div class="photo-slot s4" role="button" tabindex="0" aria-label="Change photo 4" onclick="pick(this)" onkeydown="pickOnEnter(event,this)">
+        <img src="assets/photo4.jpg" alt="Photo together 4">
+        <input type="file" accept="image/*" hidden onchange="loadPhoto(event,this)">
+      </div>
+      <div class="photo-slot s5" role="button" tabindex="0" aria-label="Change photo 5" onclick="pick(this)" onkeydown="pickOnEnter(event,this)">
+        <img src="assets/photo5.jpg" alt="Photo together 5">
+        <input type="file" accept="image/*" hidden onchange="loadPhoto(event,this)">
+      </div>
+      <div class="photo-slot s6" role="button" tabindex="0" aria-label="Change photo 6" onclick="pick(this)" onkeydown="pickOnEnter(event,this)">
+        <img src="assets/photo6.jpg" alt="Photo together 6">
+        <input type="file" accept="image/*" hidden onchange="loadPhoto(event,this)">
+      </div>
+      <div class="photo-slot s7" role="button" tabindex="0" aria-label="Change photo 7" onclick="pick(this)" onkeydown="pickOnEnter(event,this)">
+        <img src="assets/photo7.jpg" alt="Photo together 7">
+        <input type="file" accept="image/*" hidden onchange="loadPhoto(event,this)">
+      </div>
+    </div>
+
+    <svg class="bouquet" viewBox="0 0 100 100" aria-hidden="true">
+      <ellipse cx="35" cy="35" rx="12" ry="18" fill="#6B1D22" transform="rotate(-15 35 35)"/>
+      <ellipse cx="50" cy="30" rx="12" ry="18" fill="#8C2A30" transform="rotate(10 50 30)"/>
+      <ellipse cx="65" cy="38" rx="10" ry="16" fill="#D98B93" transform="rotate(20 65 38)"/>
+      <path d="M50 45 L50 85" stroke="#7C8967" stroke-width="4"/>
+    </svg>
+  </div>
+  <button class="btn primary continue-btn" onclick="showPage('flowers')">continue</button>
+</section>
+
+<!-- FLOWERS PAGE -->
+<section class="page" id="flowers">
+  <p class="flow-title">a little something for you</p>
+  <p class="flow-sub">every flower here is a small reason you make my days brighter.</p>
+  <div class="flower-video-wrap">
+    <video class="flower-video" src="assets/flowers.mp4" controls playsinline></video>
+  </div>
+  <button class="btn primary continue-btn" onclick="showPage('song')">continue</button>
+</section>
+
+<!-- SONG PAGE -->
+<section class="page" id="song">
+  <div class="song-card">
+    <p class="song-title">our song</p>
+    <p class="song-dedication">the one that always reminds me of you</p>
+    <div class="vinyl" id="vinyl" onclick="togglePlay()"></div>
+    <button class="btn primary" id="playBtn" onclick="togglePlay()" style="margin-bottom:12px;">play the song</button>
+    <audio id="player" src="assets/song.mp3" controls></audio>
+    <label class="song-upload" style="margin-top:14px; display:block;">
+      swap the song
+      <input type="file" accept="audio/*" hidden onchange="loadSong(event)">
+    </label>
+  </div>
+  <button class="btn primary continue-btn" onclick="showPage('letter')">continue</button>
+</section>
+
+
+<!-- LETTER PAGE -->
+<section class="page" id="letter">
+  <div class="stars" id="stars"></div>
+  <div class="moon"></div>
+  <div class="letter-card">
+    <p class="letter-title">for you</p>
+    <p class="letter-body" id="letterBody">Dear [her name],
+
+I wanted today to feel different from every other day, so I put this little corner of the internet together just for you.
+
+Thank you for the laughter, the patience, and the small quiet moments that somehow mean the most. Watching you grow into the person you are has been one of my favourite things.
+
+Wherever this year takes you, I hope it's full of the things that make you feel most like yourself, and I hope I get to be there for a lot of it.
+
+Happy birthday. I'm so glad you were born.</p>
+    <p class="letter-sign">— Aashish</p>
+  </div>
+</section>
+
+</div>
+<script>
+  const pages = ['greet','pictures','flowers','song','letter'];
+
+  function showPage(id){
+    pages.forEach(p=>{
+      document.getElementById(p).classList.toggle('active', p===id);
+    });
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  const noMsgs = [
+    "are you sure?",
+    "really, truly sure?",
+    "come on, just click yes",
+    "okay fine, here you go anyway →"
+  ];
+  let noCount = 0;
+  function teaseNo(){
+    const msg = document.getElementById('noMsg');
+    msg.textContent = noMsgs[Math.min(noCount, noMsgs.length-1)];
+    noCount++;
+    const btn = document.getElementById('noBtn');
+    btn.style.transform = `translateX(${(Math.random()-0.5)*80}px)`;
+    if(noCount >= noMsgs.length){
+      setTimeout(()=>showPage('pictures'), 900);
+    }
+  }
+
+  function pick(slot){ slot.querySelector('input').click(); }
+  function pickOnEnter(e, slot){
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      pick(slot);
+    }
+  }
+  function loadPhoto(e, slot){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      slot.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      slot.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  const player = document.getElementById('player');
+  const vinyl = document.getElementById('vinyl');
+  const playBtn = document.getElementById('playBtn');
+  function togglePlay(){
+    if(player.paused){ player.play(); } else { player.pause(); }
+  }
+  player.addEventListener('play', ()=>{ vinyl.classList.add('spin'); playBtn.textContent = 'pause the song'; });
+  player.addEventListener('pause', ()=>{ vinyl.classList.remove('spin'); playBtn.textContent = 'play the song'; });
+
+  function loadSong(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const url = URL.createObjectURL(file);
+    player.src = url;
+    player.play();
+  }
+
+  const starField = document.getElementById('stars');
+  for(let i=0;i<45;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random()*2.5+1;
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.top = Math.random()*100+'%';
+    s.style.left = Math.random()*100+'%';
+    s.style.animationDelay = (Math.random()*3)+'s';
+    starField.appendChild(s);
+  }
+</script>
+</body>
+</html>
